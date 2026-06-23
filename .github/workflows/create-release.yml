@@ -31,14 +31,22 @@ jobs:
 
     - name: 
       run: touch a
-    - name: Create production release
-      uses: ncipollo/release-action@v1
-      id: release
-      with:
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        name: ${{ steps.semantic_version.outputs.version_tag }}
-        body: changelog
-        draft: false
-        prerelease: false
-        commit: ${{ steps.semantic_version.outputs.current_commit }}
-        allowUpdates: false
+    # - name: Create production release
+    #   uses: ncipollo/release-action@v1
+    #   id: release
+    #   with:
+    #     tag: ${{ steps.tag_version.outputs.new_tag }}
+    #     name: ${{ steps.semantic_version.outputs.version_tag }}
+    #     body: changelog
+    #     draft: false
+    #     prerelease: false
+    #     commit: ${{ steps.semantic_version.outputs.current_commit }}
+    #     allowUpdates: false
+  release-on-push:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: minor
