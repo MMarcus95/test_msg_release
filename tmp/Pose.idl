@@ -1,0 +1,17 @@
+#ifndef DLS2_INTERFACE_MSG_POSE_IDL_
+#define DLS2_INTERFACE_MSG_POSE_IDL_ 
+
+module dls2_interface
+{
+  module msg
+  {
+    struct Pose
+    {
+      double position[3];
+      double orientation[4]; // x, y, z, w
+    };
+  };
+};
+
+#endif // DLS2_INTERFACE_MSG_POSE_IDL_
+

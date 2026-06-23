@@ -1,0 +1,16 @@
+#ifndef DLS2_INTERFACE_MSG_SCREW_IDL_
+#define DLS2_INTERFACE_MSG_SCREW_IDL_
+
+module dls2_interface
+{
+  module msg
+  {
+    struct Screw
+    {
+      double linear[3];
+      double angular[3];
+    };
+  };
+};
+
+#endif // DLS2_INTERFACE_MSG_SCREW_IDL_

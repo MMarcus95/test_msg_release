@@ -1,0 +1,21 @@
+#include "DlsHeader.idl"
+
+module dls2_interface
+{
+  module msg
+  {
+    struct CommandCall
+    {
+      dls2_interface::msg::DlsHeader header;
+
+      // data
+      string owner;
+      string command_name;
+      string docstring;
+
+      string args;
+      string ret;
+      boolean status; // true means success
+    };
+  };
+};

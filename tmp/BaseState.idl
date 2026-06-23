@@ -1,0 +1,28 @@
+#include "Pose.idl"
+#include "Screw.idl"
+#include "DlsHeader.idl"
+
+module dls2_interface
+{
+  module msg
+  {
+    struct BaseState
+    {
+      dls2_interface::msg::DlsHeader header;
+
+      string robot_name;
+
+      // base pose
+      dls2_interface::msg::Pose pose;
+
+      // base velocity
+      dls2_interface::msg::Screw velocity;
+
+      // base acceleration
+      dls2_interface::msg::Screw acceleration;
+
+      // stance status
+      sequence<boolean> stance_status;
+    };
+  };
+};

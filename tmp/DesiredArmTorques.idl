@@ -1,0 +1,17 @@
+module dls2_interface
+{
+  module msg
+  {
+    struct DesiredArmTorques
+    {
+      // header
+      string frame_id;
+      unsigned long sequence_id;
+      double timestamp;
+
+      // data
+      sequence<double> desired_arm_torques;
+      double desired_arm_gripper_torque;
+    };
+  };
+};

@@ -1,0 +1,11 @@
+/home/mmarchitto-iit.local/test_msg_release/build/CMakeFiles/dls_messages.dir
+/home/mmarchitto-iit.local/test_msg_release/build/CMakeFiles/_ArmState_msg_cpp_target.dir
+/home/mmarchitto-iit.local/test_msg_release/build/CMakeFiles/dls_messages_fastddsgen_all.dir
+/home/mmarchitto-iit.local/test_msg_release/build/CMakeFiles/ArmStateWrapper.dir
+/home/mmarchitto-iit.local/test_msg_release/build/CMakeFiles/ArmStateWrapper_swig_compilation.dir
+/home/mmarchitto-iit.local/test_msg_release/build/CMakeFiles/edit_cache.dir
+/home/mmarchitto-iit.local/test_msg_release/build/CMakeFiles/rebuild_cache.dir
+/home/mmarchitto-iit.local/test_msg_release/build/CMakeFiles/list_install_components.dir
+/home/mmarchitto-iit.local/test_msg_release/build/CMakeFiles/install.dir
+/home/mmarchitto-iit.local/test_msg_release/build/CMakeFiles/install/local.dir
+/home/mmarchitto-iit.local/test_msg_release/build/CMakeFiles/install/strip.dir

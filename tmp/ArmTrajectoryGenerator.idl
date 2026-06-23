@@ -1,0 +1,24 @@
+module dls2_interface
+{
+  module msg
+  {
+    struct ArmTrajectoryGenerator
+    {
+      // header
+      string frame_id;
+      unsigned long sequence_id;
+      double timestamp;
+
+      // data
+      sequence<double> desired_arm_joints_position;
+      sequence<double> desired_arm_joints_velocity;
+
+      double desired_arm_gripper_position;
+      double desired_arm_gripper_velocity;
+
+      sequence<double> arm_kp;
+      sequence<double> arm_kd;
+
+    };
+  };
+};
