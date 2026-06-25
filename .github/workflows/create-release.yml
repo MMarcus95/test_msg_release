@@ -58,6 +58,7 @@ jobs:
           name: release-assets
           path: release-assets
 
+
       - name: Create main release
         id: release_main
         if: github.ref_name == 'main'
