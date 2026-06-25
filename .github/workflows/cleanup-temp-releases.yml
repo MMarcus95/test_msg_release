@@ -34,19 +34,17 @@ jobs:
           echo "Merged branch: $BRANCH_NAME"
           echo "Safe branch: $SAFE_BRANCH"
 
-      - name: Delete temporary releases and tags for merged branch
+      - name: Delete all temporary releases and tags for merged branch
         run: |
           PREFIX="temp-${SAFE_BRANCH}-v"
 
           echo "Looking for releases with prefix: $PREFIX"
 
           RELEASE_TAGS="$(
-            gh api \
-              --paginate \
-              "repos/${GITHUB_REPOSITORY}/releases" \
-              --jq '.[].tag_name' \
-              | grep -E "^${PREFIX}[0-9]+$" \
-              || true
+            gh release list \
+              --limit 1000 \
+              --json tagName \
+              --jq '.[] | .tagName | select(test("^'"${PREFIX}"'[0-9]+$"))'
           )"
 
           if [ -z "$RELEASE_TAGS" ]; then
@@ -57,7 +55,7 @@ jobs:
           echo "Found temporary releases:"
           echo "$RELEASE_TAGS"
 
-          while IFS= read -r TAG; do
+          echo "$RELEASE_TAGS" | while IFS= read -r TAG; do
             if [ -z "$TAG" ]; then
               continue
             fi
@@ -67,6 +65,4 @@ jobs:
             gh release delete "$TAG" \
               --yes \
               --cleanup-tag
-          done <<EOF
-          $RELEASE_TAGS
-          EOF
+          done
