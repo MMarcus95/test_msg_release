@@ -28,6 +28,10 @@ jobs:
       - uses: rymndhng/release-on-push-action@master
         with:
           bump_version_scheme: minor
+          tag_prefix:
+            description: "Prefix to append to git tags. To unset this, set version_prefix to an empty string."
+            required: true
+            default: 'v'
       
       - name: Upload Release Assets
         if: ${{ github.event_name != 'workflow_dispatch' }}
