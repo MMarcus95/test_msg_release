@@ -109,18 +109,31 @@ jobs:
           echo "Computed release tag: $RELEASE_TAG"
 
 
-      - name: Create GitHub release and upload assets
+      - name: Create main GitHub release and upload assets
+        if: github.ref_name == 'main'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.RELEASE_TAG }}
           name: ${{ env.RELEASE_TAG }}
           target_commitish: ${{ github.sha }}
           files: release-assets/a
-          make_latest: ${{ github.ref_name == 'main' }}
+          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Move latest tag to latest main release
+      - name: Create branch GitHub release and upload assets
+        if: github.ref_name != 'main'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: ${{ env.RELEASE_TAG }}
+          target_commitish: ${{ github.sha }}
+          files: release-assets/a
+          make_latest: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Mark latest main release
         if: github.ref_name == 'main'
         run: |
           git config user.name "github-actions[bot]"
@@ -128,3 +141,7 @@ jobs:
 
           git tag -f latest "$GITHUB_SHA"
           git push origin latest --force
+
+          gh release edit "$RELEASE_TAG" --latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
