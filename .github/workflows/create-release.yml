@@ -1,6 +1,9 @@
 name: Create Release and .deb Files Project
 
-on: push
+on:
+  push:
+    branches:
+      - "**"
 
 env:
   GNUTLS_CPUID_OVERRIDE: 0x1
@@ -36,24 +39,64 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          set-safe-directory: true
+
+      - name: Normalize branch name
+        run: |
+          SAFE_BRANCH="${GITHUB_REF_NAME//\//-}"
+          SAFE_BRANCH="${SAFE_BRANCH//_/-}"
+          SAFE_BRANCH="$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')"
+
+          echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
+
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: release-assets
           path: release-assets
 
-      - name: Create release on push
-        id: release
+      - name: Create main release
+        id: release_main
+        if: github.ref_name == 'main'
         uses: rymndhng/release-on-push-action@master
         with:
           bump_version_scheme: minor
-          tag_prefix: temp-${{ github.ref_name }}-v
-          release_name: temp-${{ github.ref_name }}-v<RELEASE_VERSION>
+          tag_prefix: v
+          release_name: <RELEASE_TAG>
+
+      - name: Create branch release
+        id: release_branch
+        if: github.ref_name != 'main'
+        uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: patch
+          tag_prefix: temp-${{ env.SAFE_BRANCH }}-v
+          release_name: <RELEASE_TAG>
+
+      - name: Resolve release tag
+        run: |
+          if [ "${GITHUB_REF_NAME}" = "main" ]; then
+            echo "RELEASE_TAG=${{ steps.release_main.outputs.tag_name }}" >> "$GITHUB_ENV"
+          else
+            echo "RELEASE_TAG=${{ steps.release_branch.outputs.tag_name }}" >> "$GITHUB_ENV"
+          fi
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.release.outputs.tag_name }}
+          tag_name: ${{ env.RELEASE_TAG }}
           files: release-assets/a
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Move latest tag to latest main release
+        if: github.ref_name == 'main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git tag -f latest "$RELEASE_TAG"
+          git push origin latest --force
