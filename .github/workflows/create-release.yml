@@ -28,19 +28,10 @@ jobs:
       - uses: rymndhng/release-on-push-action@master
         with:
           bump_version_scheme: minor
-
-    upload-release-asset:
-      runs-on: ubuntu-latest
-      needs: release-on-push
-      steps:
-        - uses: actions/checkout@v4
-          with:
-            set-safe-directory: true
-        - name: Upload Release Asset
-          uses: softprops/action-gh-release@v1
-          with:
-            files: a
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      
+      - name: Upload Release Assets
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        uses: softprops/action-gh-release@v1
+        with:
+          files: 'a'
             
