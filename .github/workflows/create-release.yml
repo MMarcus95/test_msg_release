@@ -19,6 +19,11 @@ jobs:
         set-safe-directory: true
     - name: 
       run: touch a
+    - name: Upload Release Assets
+      if: ${{ github.event_name != 'workflow_dispatch' }}
+      uses: softprops/action-gh-release@v1
+      with:
+        files: 'a'
 
   release-on-push:
     runs-on: ubuntu-latest
