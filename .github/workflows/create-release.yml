@@ -47,6 +47,8 @@ jobs:
         uses: rymndhng/release-on-push-action@master
         with:
           bump_version_scheme: minor
+          tag_prefix: ${{ github.ref_name }}-fix-v
+          release_name: ${{ github.ref_name }}-fix-v<RELEASE_VERSION>
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
