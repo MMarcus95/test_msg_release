@@ -1,0 +1,72 @@
+name: Cleanup Temporary Branch Releases
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  cleanup-temp-releases:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Normalize merged branch name
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+
+          SAFE_BRANCH="${BRANCH_NAME//\//-}"
+          SAFE_BRANCH="${SAFE_BRANCH//_/-}"
+          SAFE_BRANCH="$(echo "$SAFE_BRANCH" | tr '[:upper:]' '[:lower:]')"
+
+          echo "BRANCH_NAME=$BRANCH_NAME" >> "$GITHUB_ENV"
+          echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
+
+          echo "Merged branch: $BRANCH_NAME"
+          echo "Safe branch: $SAFE_BRANCH"
+
+      - name: Delete temporary releases and tags for merged branch
+        run: |
+          PREFIX="temp-${SAFE_BRANCH}-v"
+
+          echo "Looking for releases with prefix: $PREFIX"
+
+          RELEASE_TAGS="$(
+            gh api \
+              --paginate \
+              "repos/${GITHUB_REPOSITORY}/releases" \
+              --jq '.[].tag_name' \
+              | grep -E "^${PREFIX}[0-9]+$" \
+              || true
+          )"
+
+          if [ -z "$RELEASE_TAGS" ]; then
+            echo "No temporary releases found for branch: $BRANCH_NAME"
+            exit 0
+          fi
+
+          echo "Found temporary releases:"
+          echo "$RELEASE_TAGS"
+
+          while IFS= read -r TAG; do
+            if [ -z "$TAG" ]; then
+              continue
+            fi
+
+            echo "Deleting release and tag: $TAG"
+
+            gh release delete "$TAG" \
+              --yes \
+              --cleanup-tag
+          done <<EOF
+          $RELEASE_TAGS
+          EOF
