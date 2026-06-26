@@ -22,6 +22,7 @@ module dls2_interface
       double gripper_position;
       double gripper_velocity;
       double gripper_effort;
+      
     };
   };
 };
