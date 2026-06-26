@@ -1,4 +1,4 @@
-name: Cleanup Temporary Branch Releases
+name: Cleanup Temporary Branch Releases when Pull Request is Merged
 
 on:
   pull_request:

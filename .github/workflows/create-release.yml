@@ -23,7 +23,7 @@ jobs:
           set-safe-directory: true
 
       - name: Create asset
-        run: echo "test asset" > a
+        run: echo "test asset prerelease" > a
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -130,5 +130,6 @@ jobs:
           target_commitish: ${{ github.sha }}
           files: release-assets/a
           make_latest: false
+          prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
