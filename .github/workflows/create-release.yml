@@ -130,5 +130,6 @@ jobs:
           target_commitish: ${{ github.sha }}
           files: release-assets/a
           make_latest: false
+          prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
